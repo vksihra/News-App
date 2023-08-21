@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import Navnews from "./components/Navnews";
-import axios from "axios";
 import Newscontent from "./components/newscontent/Newscontent";
 import apikey from "./data/apikey";
 import Footer from "./components/Footer";
 
 function App() {
   const [category, setCategory] = useState("general");
-  const [newsArray, setnewsArray] = useState([]);
-  const [newsResults, setnewsResults] = useState();
+  const [newsArray, setNewsArray] = useState([]);
+  const [newsResults, setNewsResults] = useState();
   const [loadmore, setLoadmore] = useState(20);
 
   const newsapi = async () => {
     try {
-      const news = await axios.get(
+      const response = await fetch(
         `https://newsapi.org/v2/top-headlines?country=in&apiKey=${apikey}&category=${category}&pageSize=${loadmore}`
       );
-      setnewsArray(news.data.articles);
-      setnewsResults(news.data.totalResults);
+      const data = await response.json();
+      setNewsArray(data.articles);
+      setNewsResults(data.totalResults);
     } catch (error) {
       console.log(error);
     }
@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     newsapi();
-  }, [newsResults, category, loadmore]);
+  }, [category, loadmore]);
 
   return (
     <div className="App">
